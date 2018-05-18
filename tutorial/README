@@ -1,0 +1,6 @@
+You'll need to download and install libmicrohttpd from ftp://ftp.gnu.org/gnu/libmicrohttpd/  - or see https://www.gnu.org/software/libmicrohttpd/ for http download.
+You'll need to clone https://github.com/ThrowTheSwitch/CMock
+
+
+You'll need to set the CMOCK path e.g.:
+ $ export CMOCK_DIR=~/Projects/Personal/terminals/cmock/

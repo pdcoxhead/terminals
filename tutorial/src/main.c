@@ -1,9 +1,25 @@
-#include <sys/types.h>
-#include <sys/select.h>
-#include <sys/socket.h>
-#include <microhttpd.h>
+#include <string.h>
+#include <stdio.h>
+#include "main.h"
+
 
 #define PORT 8888
+const char *page  = "<html><body>Hello, browser!</body></html>";
+
+#ifndef TEST
+int main ()
+{
+  struct MHD_Daemon *daemon;
+
+  daemon = MHD_start_daemon (MHD_USE_SELECT_INTERNALLY, PORT, NULL, NULL,
+                             &answer_to_connection, NULL, MHD_OPTION_END);
+  if (NULL == daemon) return 1;
+  getchar ();
+
+  MHD_stop_daemon (daemon);
+  return 0;
+}
+#endif
 
 int answer_to_connection (void *cls, struct MHD_Connection *connection,
                           const char *url,
@@ -21,17 +37,4 @@ int answer_to_connection (void *cls, struct MHD_Connection *connection,
   MHD_destroy_response (response); //clean up
 
   return ret;
-}
-
-int main ()
-{
-  struct MHD_Daemon *daemon;
-
-  daemon = MHD_start_daemon (MHD_USE_SELECT_INTERNALLY, PORT, NULL, NULL,
-                             &answer_to_connection, NULL, MHD_OPTION_END);
-  if (NULL == daemon) return 1;
-  getchar ();
-
-  MHD_stop_daemon (daemon);
-  return 0;
 }
