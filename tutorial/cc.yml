@@ -1,0 +1,41 @@
+compiler:
+  path: gcc
+  source_path:     'src/'
+  unit_tests_path: &unit_tests_path 'test/'
+  build_path:      &build_path 'build/'
+  options:
+    - -c
+  includes:
+    prefix: '-I'
+    items:
+      - 'src/'
+      - '../cmock/vendor/unity/src/'
+      - './build/mocks/'
+      - *unit_tests_path
+  defines:
+    prefix: '-D'
+    items:
+      - __monitor
+  object_files:
+    prefix: '-o'
+    extension: '.o'
+    destination: *build_path
+linker:
+  path: gcc
+  options:
+    - -lm
+  includes:
+    prefix: '-I'
+  object_files:
+    path: *build_path
+    extension: '.o'
+  bin_files:
+    prefix: '-o'
+    extension: '.exe'
+    destination: *build_path    
+:cmock:
+  :includes:
+    # My attempt to get cmock to work with libmicrohttpd - the struct MHD_Connection is not defined in an way that is accessible to cmock
+    - '../libmicrohttpd/libmicrohttpd-0.9.59/src/microhttpd/internal.h'
+
+colour: true

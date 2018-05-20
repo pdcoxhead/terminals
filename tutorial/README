@@ -1,6 +1,61 @@
+Setup
+=====
+
 You'll need to download and install libmicrohttpd from ftp://ftp.gnu.org/gnu/libmicrohttpd/  - or see https://www.gnu.org/software/libmicrohttpd/ for http download.
 You'll need to clone https://github.com/ThrowTheSwitch/CMock
 
-
 You'll need to set the CMOCK path e.g.:
  $ export CMOCK_DIR=~/Projects/Personal/terminals/cmock/
+
+ and possibly the libmicrohttp lib folder
+ $ export PATH_TO_LIBMHD_LIBS=/usr/local/lib/
+
+ My folder structure (1 deep) after installing all the various third party libs lookks something like
+
+├── Unity
+├── cmock
+├── cunit
+├── liblist
+├── libmicrohttpd
+└── tutorial
+
+Note that 'cunit' and 'liblist' were not acutally used yet.  liblist was intended as a way to store the terminals.
+
+The mocks do not currently compile due to the sizeof MHD_Connection not being obvious to the compiler - I was trying to configure cmock in a way to so that it would include the required header file in each mock and know where to find the others.
+
+You should be able to compile with:
+  $ make clean && make
+
+Which will also start the engines
+
+TODO
+====
+ * get the mocks into a compilable state
+ * add suitable tests to make sure the unit behaviour was correct - for example:
+  - calling answer_to_connection with a "POST" method will call 'handlePosts' and the required endpoint handler (example is there already)
+  - calling answer_to_connection with a "GET" method will call 'handleGets' and the required endpoint handler (example is there already)
+  - calling answer_to_connection with an url that hasn't got a handler will mean error_notfound will be called
+  - Add tests with Posts that have large amounts of valid data - likely this would necesitate changes to the implementation
+  - Eventually once we have a place to store the terminals
+    -- Find a suitable library for JSON marshalling and unmarshalling - e.g. json-c (https://github.com/json-c/json-c)
+    -- test the create terminal interface so we can verify the list of terminals has increased correctly when a new terminal was posted
+    -- test the list all terminals interface returns the list of terminals
+    -- test the 'get a particular terminal' interface to make sure it returns the requested terminal
+    -- test the 'get a particular terminal' interface handles invalid input correctly (id not found etc)
+  - Large test
+  	-- test end point "GET" and "POST" behaviour is correct similar to above via non-mocked terminal manager / web server
+ * Setup a proper logging system rather than the printf's lying around (also log useful things rather than just prevoius line used for debugging)
+
+
+Basic REST interface:
+GET /terminals - retreive the list of all terminals in JSON format
+GET /terminals/id/ - retrieve an individual terminal with the given id in JSON format
+POST /terminal/ - Which JSON data payload - Add a new terminal to the list
+
+Not Happy Things
+================
+* Not happy with the current state of my mock tests. I'm sure there's a way around it - just move the tests out of the way to compile
+* Not happy with the POST response being empty, I haven't figured out why the responses are not sent back correctly yet
+* Rake files are little superfluous at the moment but might be useful once correctly setup
+* Would like to extract out the creation of the con_cls data so that the answer_to_connection function is smaller
+* not happy didn't get a terminal manager - wanted to add tests on existing things first but didn't quite jump the bump.

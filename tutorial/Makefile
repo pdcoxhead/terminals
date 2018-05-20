@@ -8,7 +8,9 @@ TEST_MAKEFILE = ${TEST_BUILD_DIR}/MakefileTestSupport
 OBJ ?= ${BUILD_DIR}/obj
 OBJ_DIR = ${OBJ}
 CMOCK = /Users/peterco/Projects/Personal/terminals/cmock
-INCLUDEPATHS = -I$$PATH_TO_LIBMHD_INCLUDES 
+# Trying to get at the internal.h and other headers files required for the mock web server to compile
+# INCLUDEPATHS = -I$$PATH_TO_LIBMHD_INCLUDES  -I ../libmicrohttpd//libmicrohttpd-0.9.59/src/include/ -I ../libmicrohttpd/libmicrohttpd-0.9.59/
+INCLUDEPATHS = -I$$PATH_TO_LIBMHD_INCLUDES
 LIBPATHS = -L$$PATH_TO_LIBMHD_LIBS
 LDFLAGS = -lmicrohttpd
 
@@ -24,8 +26,8 @@ setup:
 clean:
 	rm -rf ${BUILD_DIR}
 
-${BUILD_DIR}/main: ${SRC_DIR}/main.c
-	${CC} $< -o $@  ${INCLUDEPATHS} ${LIBPATHS} ${LDFLAGS}
+${BUILD_DIR}/main: ${SRC_DIR}/main.c ${SRC_DIR}/web_server.c
+	${CC} $^ -o $@  ${INCLUDEPATHS} ${LIBPATHS} ${LDFLAGS}
 
 run:
 	./build/main || true
